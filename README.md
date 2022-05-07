@@ -4,7 +4,9 @@ A planned Discord bot. Details added over time
 
 Branch Strategy
 Main > Active bot. DO NOT EDIT THIS BRANCH
+
   DEV > Test code. direct editing is acceptible, not recommended
+
     Sub branch off of dev for specific projects, pull to dev through request then after dev testing is done pull to main to distribute
 
 
