@@ -1,9 +1,10 @@
-# syskeepers
+# ATLAS DUO
 A planned Discord bot. Details added over time
 
 
 Branch Strategy
 Main > Active bot. DO NOT EDIT THIS BRANCH
+is_online = true
 
 DEV > Test code. direct editing is acceptible, not recommended
 

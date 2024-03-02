@@ -1,0 +1,27 @@
+import discord
+from discord.ext import commands
+import os 
+
+#import bot token
+from apikeys import* 
+
+client = commands.Bot(command_prefix = '!', intents=intents)
+
+@client.event 
+async def on__ready():
+    await client.change_presence(status=discord.Status.online)
+    print("ATLAS DUO is now ready to use!")
+    print("------------------------------")
+    
+initital__extensions = []
+
+for filename in os.listdir('./cogs')
+    if filename.endswith('.py')
+        initital__extensions.append("cog."+filename[:3])
+        
+print(initital__extensions)
+
+if __name__ == '__main__':
+    for extension in initital__extensions:
+        client.load_extension(extension)
+client.run('MTIxMjU1MTk5NDY0OTM1MDE4NQ.GMYmR2.3GI1TgJ1DAeImtyrP2-Dfe7-ppm4ROwg48Sfuk')
