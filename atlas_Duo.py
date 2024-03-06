@@ -4,13 +4,14 @@ import time
 from discord.ext import commands
 from APIKeys import *
 from random import randrange
-
+#as I am learning this, a lot of the stuff will be stored here. I am not sharing the apiKey as it is a direct link to the bot on discord. this will only exist on the machine that will be running it or via a direct transfer. it is secure data.
 
 intents = discord.Intents.default() 
 intents.message_content = True 
 intents.messages = True 
 intents.guilds = True
-client = commands.Bot(command_prefix = '!', intents=intents)
+client = commands.Bot(command_prefix = ['!','ad!','$'], intents=intents)
+
 
 @client.event 
 async def on__ready():
@@ -31,7 +32,10 @@ async def on_message(message):
     if message.content.startswith(str.lower("oranges")): 
         await message.channel.send('Here is a new test method!') 
         #print("Least we got here.")
+    #if "roxy" in message.content.lower():
+        #await message.channel.send('Roxy has been mentioned. Should I get out the martini glasses or prepare for a wave of furries?')
     await client.process_commands(message)
+    
 
 @client.command()
 async def hello(ctx):
@@ -73,7 +77,24 @@ async def Game(ctx):
     else:
         await ctx.send("Alright, guess I can do something. maybe.")
 
+#decide what commands to do and how to do. need to figure out delete of lines and cleanup. unable brain operation
 
+@client.command()
+async def AddSystem(ctx):
+    await ctx.send("this is a placeholder for adding systems")
+
+@client.command()
+async def ImportSystem(ctx):
+    await ctx.send("this is a placeholder for importing systems")
+
+@client.command()
+async def UpdateSystem(ctx):
+    await ctx.send("this is a placeholder for updating existing systems")
+
+@client.command()
+async def UseAutoProxy(ctx):
+    await ctx.send("this is a placeholder for enabling auto proxy")
 
 client.run(Botkey)
+
 
