@@ -1,5 +1,7 @@
 import discord
 import time
+import re
+#from dhooks import Webhook
 #import requests
 from discord.ext import commands
 from APIKeys import *
@@ -11,7 +13,11 @@ intents.message_content = True
 intents.messages = True 
 intents.guilds = True
 client = commands.Bot(command_prefix = ['!','ad!','$'], intents=intents)
+from TestCommands import *
+from AtDu_System import *
+from AtDuo_User import *
 
+MyTestHashTable = {}
 
 @client.event 
 async def on__ready():
@@ -29,9 +35,14 @@ async def on_message(message):
     #print(str(message.content))
     if message.author.bot:
         return
-    if message.content.startswith(str.lower("oranges")): 
-        await message.channel.send('Here is a new test method!') 
+    #if re.match('oranges',message.content):
+    #   await message.channel.send('Here is a regex test for this word!') 
+    #print(str.lower(message.content))
+    if str.lower(message.content).startswith("replacemetext"): 
         #print("Least we got here.")
+        myVar = message.content
+        await message.delete()
+        await message.channel.send(myVar)
     #if "roxy" in message.content.lower():
         #await message.channel.send('Roxy has been mentioned. Should I get out the martini glasses or prepare for a wave of furries?')
     await client.process_commands(message)
@@ -94,6 +105,41 @@ async def UpdateSystem(ctx):
 @client.command()
 async def UseAutoProxy(ctx):
     await ctx.send("this is a placeholder for enabling auto proxy")
+
+@client.command()
+async def AddToTableTest(ctx,Value,MyTestContent):
+    await ctx.send("I am adding " + Value + " to the table as a Key. Adding " + MyTestContent + " as its value")
+    if ctx.author not in MyTestHashTable:
+        MyTestHashTable[ctx.author] = {}
+    MyTestHashTable[ctx.author][Value] = MyTestContent
+    
+@client.command()
+async def RetrieveTableTest(ctx,Value):
+    if ctx.author not in MyTestHashTable:
+        await ctx.send("this user hasn't stored anything")
+        return
+    if Value not in MyTestHashTable[ctx.author]:
+        await ctx.send("This value was not defined")
+        return
+    await ctx.send("I am Retrieving " + Value + " to the table, it returns " + MyTestHashTable[ctx.author][Value])
+    
+@client.command()
+async def TestEmbed(ctx):
+    embed = discord.Embed(title="Sample Embed", url="https://realdrewdata.medium.com/",
+                            description="This is an embed that will show you how to build an embed and the differnt components",
+                            color =0xFF5733)
+    await ctx.send(embed=embed)
+    
+@client.command()
+async def TestDirectMessage(ctx):
+    member = ctx.author
+    await ctx.send("preparing a test Direct message")
+    try:
+        await member.send("This is a test message")
+        await ctx.send(':white_check_mark: Your Message has been sent')
+    except:
+        await ctx.send(':x: Member had their dm close, message not sent')
+    
 
 client.run(Botkey)
 
