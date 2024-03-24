@@ -1,10 +1,16 @@
 import discord
 import time
 import re
+import aiohttp
+import asyncio
+#import discord_webhook
+
 #from dhooks import Webhook
 #import requests
+#from discord_webhook import DiscordWebhook
 from discord.ext import commands
 from APIKeys import *
+from discord import Webhook
 from random import randrange
 #as I am learning this, a lot of the stuff will be stored here. I am not sharing the apiKey as it is a direct link to the bot on discord. this will only exist on the machine that will be running it or via a direct transfer. it is secure data.
 
@@ -20,7 +26,7 @@ from AtDuo_User import *
 MyTestHashTable = {}
 
 @client.event 
-async def on__ready():
+async def on_ready():
     await client.change_presence(status=discord.Status.online)
     print("ATLAS DUO is now ready to use!")
     print("------------------------------")
@@ -31,6 +37,7 @@ async def on_message(message):
     author_id = message.author.id
     guild_id = message.guild.id 
     author = message.author
+    #author = message.author.locale #not available at this level. will be available as an option for them to select when setting up the app. possibly via DM
     user_id = {"_id": author_id}
     #print(str(message.content))
     if message.author.bot:
@@ -38,11 +45,11 @@ async def on_message(message):
     #if re.match('oranges',message.content):
     #   await message.channel.send('Here is a regex test for this word!') 
     #print(str.lower(message.content))
-    if str.lower(message.content).startswith("replacemetext"): 
+    #if str.lower(message.content).startswith("replacemetext"): 
         #print("Least we got here.")
-        myVar = message.content
-        await message.delete()
-        await message.channel.send(myVar)
+        #myVar = message.content
+        #await message.delete()
+        #await message.channel.send(myVar)
     #if "roxy" in message.content.lower():
         #await message.channel.send('Roxy has been mentioned. Should I get out the martini glasses or prepare for a wave of furries?')
     await client.process_commands(message)
@@ -139,8 +146,79 @@ async def TestDirectMessage(ctx):
         await ctx.send(':white_check_mark: Your Message has been sent')
     except:
         await ctx.send(':x: Member had their dm close, message not sent')
+
+
+@client.command()
+async def TestReact(ctx):
+    def check(reaction, user):  # Our check for the reaction
+        return user == ctx.message.author  # We check that only the authors reaction counts
+
+    await ctx.send("Please react to the message!")  # Message to react to
+
+    reaction = await client.wait_for("reaction_add", check=check)  # Wait for a reaction
+    await ctx.send(f"You reacted with: {reaction[0]}")  # With [0] we only display the emoji
+    
+# @client.command(pass_context=True)
+# async def emoji(ctx):
+#     msg = await client.say("working")
+#     reactions = ['dart']
+#     for emoji in reactions: 
+#         await client.add_reaction(msg, emoji)
+
+#work on making the embed and have it update on react. replacing existing with a new page of data
+#need to test the class data
+
+@client.command()
+async def CreateClass(ctx):
+    Value = 'myClassTest'
+    if ctx.author not in MyTestHashTable:
+        MyTestHashTable[ctx.author] = {}
+    if Value not in MyTestHashTable[ctx.author]:
+        MyUserData = AtDuo_User()
+        MyUserData.Name = ctx.author
+        MyTestHashTable[ctx.author][Value] = MyUserData
+        await ctx.send("Data Stored")
+        print(MyUserData.Name)
+        #print(MyUserData.__MyUUID)
+
+@client.command()
+async def PrepareHooks(ctx):
+    Iexist = False
+    webhooks = await ctx.channel.webhooks()
+    for webhook in webhooks:
+        if webhook.name == 'Atlas Duo WebHook':
+            Iexist = True
+            myHook = webhook
+    if Iexist == False:
+        print("No hook detected, creating")
+        await ctx.channel.create_webhook(name='Atlas Duo WebHook')
+        webhooks = await ctx.channel.webhooks()
+        for webhook in webhooks:
+            if webhook.name == 'Atlas Duo WebHook':
+                myHook = webhook
+    else:
+        print("Webhook already exists")
+    
+    return myHook
+
+@client.command()
+async def TestWebhook(ctx):
+    myHook = await PrepareHooks(ctx)
+    MyHookData = {}
+    MyHookData["username"] = "Another Call for Atlas"
+    MyHookData["content"] = "I am testing an alternative method for sending data to the bot"
+    #print(myHook)
+    #webhook = DiscordWebhook(url="your webhook url", content="Webhook Message")
+    #response = webhook.execute()
+    #print(type(myHook))
+    
+    await myHook.send("Webhook test in progress...")
+    await myHook.send(username = "Test Of Atlas",
+                      content = "this is my content, I am content")
+    #await myHook.send(MyHookData)
     
 
 client.run(Botkey)
+
 
 
