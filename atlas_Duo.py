@@ -3,6 +3,7 @@ import time
 import re
 import aiohttp
 import asyncio
+import json
 #import discord_webhook
 
 #from dhooks import Webhook
@@ -204,18 +205,16 @@ async def PrepareHooks(ctx):
 @client.command()
 async def TestWebhook(ctx):
     myHook = await PrepareHooks(ctx)
-    MyHookData = {}
-    MyHookData["username"] = "Another Call for Atlas"
-    MyHookData["content"] = "I am testing an alternative method for sending data to the bot"
+    MyHookData = '{ "name":"MyTestData", "content":"Testing a JSON object for this. "}'
     #print(myHook)
     #webhook = DiscordWebhook(url="your webhook url", content="Webhook Message")
     #response = webhook.execute()
     #print(type(myHook))
     
     await myHook.send("Webhook test in progress...")
-    await myHook.send(username = "Test Of Atlas",
-                      content = "this is my content, I am content")
-    #await myHook.send(MyHookData)
+    #await myHook.send(username = "Test Of Atlas",
+    #                  content = "this is my content, I am content")
+    await myHook.send(MyHookData)
     
 
 client.run(Botkey)
