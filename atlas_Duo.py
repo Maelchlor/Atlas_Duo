@@ -4,6 +4,7 @@ import re
 import aiohttp
 import asyncio
 import json
+import requests
 #import discord_webhook
 
 #from dhooks import Webhook
@@ -191,31 +192,39 @@ async def PrepareHooks(ctx):
             Iexist = True
             myHook = webhook
     if Iexist == False:
-        print("No hook detected, creating")
+        #print("No hook detected, creating")
         await ctx.channel.create_webhook(name='Atlas Duo WebHook')
         webhooks = await ctx.channel.webhooks()
         for webhook in webhooks:
             if webhook.name == 'Atlas Duo WebHook':
                 myHook = webhook
-    else:
-        print("Webhook already exists")
     
     return myHook
 
 @client.command()
 async def TestWebhook(ctx):
     myHook = await PrepareHooks(ctx)
-    MyHookData = '{ "name":"MyTestData", "content":"Testing a JSON object for this. "}'
-    #print(myHook)
+    #MyHookData = { "username":"MyTestData", "content":"Testing a JSON object for this. "}
+    url = myHook.url
+    data = {
+    "content" : "Testing a JSON object for this.",
+    "username" : "MyTestData"
+    }
     #webhook = DiscordWebhook(url="your webhook url", content="Webhook Message")
     #response = webhook.execute()
     #print(type(myHook))
-    
-    await myHook.send("Webhook test in progress...")
+    result = requests.post(url, json = data)
+    #await myHook.send("Webhook test in progress...")
     #await myHook.send(username = "Test Of Atlas",
     #                  content = "this is my content, I am content")
-    await myHook.send(MyHookData)
-    
+    #await myHook.send(MyHookData)
+    try:
+        result.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print(err)
+    else:
+        print("Payload delivered successfully, code {}.".format(result.status_code))
+
 
 client.run(Botkey)
 
