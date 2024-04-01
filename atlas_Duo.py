@@ -11,6 +11,7 @@ import requests
 #import requests
 #from discord_webhook import DiscordWebhook
 from discord.ext import commands
+from discord.ext.commands import Bot, has_permissions, CheckFailure
 from APIKeys import *
 from discord import Webhook
 from random import randrange
@@ -24,6 +25,7 @@ client = commands.Bot(command_prefix = ['!','ad!','$'], intents=intents)
 from TestCommands import *
 from AtDu_System import *
 from AtDuo_User import *
+from atlas_Commands import *
 
 MyTestHashTable = {}
 
@@ -47,11 +49,30 @@ async def on_message(message):
     #if re.match('oranges',message.content):
     #   await message.channel.send('Here is a regex test for this word!') 
     #print(str.lower(message.content))
-    #if str.lower(message.content).startswith("replacemetext"): 
+    if str.lower(message.content).startswith("replacemetext"): 
         #print("Least we got here.")
-        #myVar = message.content
-        #await message.delete()
-        #await message.channel.send(myVar)
+        myVar = message.content
+        try:
+            print(str(message.reference))
+        except:
+            print("reference not it")
+        
+        JSON_Data = {
+            "content" : str(message.content[13:]),
+            "username" : str(message.author) + "_TestBot",
+            "avatar_url" : "https://media.discordapp.net/attachments/1212866248535441469/1213210590412021770/image.png?ex=661054e9&is=65fddfe9&hm=0623351975726152753d694237ac7189ba1c0cd970551f11a96aea5879dfc2b4&=&format=webp&quality=lossless"
+        }
+        if None == message.reference:
+            print("This is not a reply")
+        else:
+            print("This is a reply")
+            #JSON_Data["message_reference"] = message.reference.message_id
+     
+        print (JSON_Data)
+        My_Webhook = await PrepareHooks(message)
+        await Run_WebHook(My_Webhook,JSON_Data)
+        await message.delete()
+        
     #if "roxy" in message.content.lower():
         #await message.channel.send('Roxy has been mentioned. Should I get out the martini glasses or prepare for a wave of furries?')
     await client.process_commands(message)
@@ -99,21 +120,7 @@ async def Game(ctx):
 
 #decide what commands to do and how to do. need to figure out delete of lines and cleanup. unable brain operation
 
-@client.command()
-async def AddSystem(ctx):
-    await ctx.send("this is a placeholder for adding systems")
 
-@client.command()
-async def ImportSystem(ctx):
-    await ctx.send("this is a placeholder for importing systems")
-
-@client.command()
-async def UpdateSystem(ctx):
-    await ctx.send("this is a placeholder for updating existing systems")
-
-@client.command()
-async def UseAutoProxy(ctx):
-    await ctx.send("this is a placeholder for enabling auto proxy")
 
 @client.command()
 async def AddToTableTest(ctx,Value,MyTestContent):
@@ -159,16 +166,6 @@ async def TestReact(ctx):
 
     reaction = await client.wait_for("reaction_add", check=check)  # Wait for a reaction
     await ctx.send(f"You reacted with: {reaction[0]}")  # With [0] we only display the emoji
-    
-# @client.command(pass_context=True)
-# async def emoji(ctx):
-#     msg = await client.say("working")
-#     reactions = ['dart']
-#     for emoji in reactions: 
-#         await client.add_reaction(msg, emoji)
-
-#work on making the embed and have it update on react. replacing existing with a new page of data
-#need to test the class data
 
 @client.command()
 async def CreateClass(ctx):
@@ -183,7 +180,17 @@ async def CreateClass(ctx):
         print(MyUserData.Name)
         #print(MyUserData.__MyUUID)
 
+
+
 @client.command()
+async def TestWebhook(ctx):
+    myHook = await PrepareHooks(ctx)
+    data = {
+    "content" : "Testing a JSON object for this.",
+    "username" : "MyTestData"
+    }
+    await Run_WebHook(myHook,data)
+
 async def PrepareHooks(ctx):
     Iexist = False
     webhooks = await ctx.channel.webhooks()
@@ -198,35 +205,28 @@ async def PrepareHooks(ctx):
         for webhook in webhooks:
             if webhook.name == 'Atlas Duo WebHook':
                 myHook = webhook
-    
     return myHook
 
-@client.command()
-async def TestWebhook(ctx):
-    myHook = await PrepareHooks(ctx)
-    #MyHookData = { "username":"MyTestData", "content":"Testing a JSON object for this. "}
-    url = myHook.url
-    data = {
-    "content" : "Testing a JSON object for this.",
-    "username" : "MyTestData"
-    }
-    #webhook = DiscordWebhook(url="your webhook url", content="Webhook Message")
-    #response = webhook.execute()
-    #print(type(myHook))
-    result = requests.post(url, json = data)
-    #await myHook.send("Webhook test in progress...")
-    #await myHook.send(username = "Test Of Atlas",
-    #                  content = "this is my content, I am content")
-    #await myHook.send(MyHookData)
+async def Run_WebHook(Webhook,JSON_Data):
+    url = Webhook.url
+    result = requests.post(url, json = JSON_Data)
     try:
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
         print(err)
-    else:
-        print("Payload delivered successfully, code {}.".format(result.status_code))
+    #else:
+    #    print("Payload delivered successfully, code {}.".format(result.status_code))
 
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def CheckifMod(ctx):
+    msg = "This user appears to have manage_messages access: {}".format(ctx.message.author.mention)
+    await ctx.send(msg)
+ 
+@CheckifMod.error
+async def CheckifMod_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        msg = "user calling this does not have manage_messages access: {}".format(ctx.message.author.mention)  
+        await ctx.send(msg)
 
 client.run(Botkey)
-
-
-
