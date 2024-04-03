@@ -9,7 +9,7 @@ class AtDu_System:
     Image = ''
     
     
-    def __init__(self,name,author) -> None:
+    def __init__(self,name : str,author : str) -> None:
         self.Name = name
         self.Author = author
         pass
@@ -23,7 +23,7 @@ class AtDu_System:
     def GetBaseUser(self):
         return self.author
     
-    def UpdateAvatar(self,Image):
+    def UpdateAvatar(self,Image : str):
         self.Image = Image
     
     def getJSONData(self):
