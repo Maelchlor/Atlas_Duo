@@ -87,11 +87,6 @@ async def hello(ctx):
     #await ctx.send("Did you notice the delay? I waited " + str(myRandom) + " seconds to continue" )
     
 
-@client.command()
-async def TestMessage1(ctx):
-    await ctx.send("This is a test, only a test. breaking everything begins now.")
-    await ctx.send("seeing if this sends multiple messages or if I am misunderstanding this.")
-    await ctx.send("Purple and pink.")
     
 @client.command()
 async def Marco(ctx):
