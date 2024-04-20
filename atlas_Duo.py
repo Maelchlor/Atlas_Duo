@@ -50,6 +50,7 @@ async def on_message(message):
     #if re.match('oranges',message.content):
     #   await message.channel.send('Here is a regex test for this word!') 
     #print(str.lower(message.content))
+    await CheckforProxy(message)
     if str.lower(message.content).startswith("replacemetext"): 
         #print("Least we got here.")
         myVar = message.content

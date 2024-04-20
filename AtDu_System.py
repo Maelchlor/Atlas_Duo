@@ -1,5 +1,7 @@
 #for managing the class for Systems/alts
 #store the Discord name, the name of the altar, and the path for the icon
+#in the database, ID, ownerID, Name,Calltext,ImageURL,Pronouns,Bio
+#see if you need to add anything else to the systems before you finalize the DB design
 import json
 
 class AtDu_System:
@@ -7,11 +9,16 @@ class AtDu_System:
     Author = ''
     CallText = ''
     Image = ''
+    Pronouns = ''
+    Bio = ''
     
+    def __str__(self):
+        return f"{self.Author} {self.Name} {self.CallText}"
     
-    # def __init__(self,name : str,author : str) -> None:
-    #     self.Name = name
-    #     self.Author = author
+    def __init__(self,name,author,CallText):
+         self.Name = name
+         self.Author = author
+         self.CallText = CallText
     #     pass
 
     #using JSON data now
@@ -19,7 +26,7 @@ class AtDu_System:
     #def GetDiscordProxy():
     #    pass
     
-    #for mods requesting who the proxy was called by.
+    #for mods requesting who the proxy was called by. this might not be necessary if I make this a DB response. I can have it pull from the DB instead. 
     def GetBaseUser(self):
         return self.author
     
