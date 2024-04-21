@@ -31,7 +31,7 @@ class AtDu_System:
         return self.author
     
     def UpdateAvatar(self,Image : str):
-        self.Image = Image
+        self.Image = Image 
     
     def getJSONData(self):
         json = {}

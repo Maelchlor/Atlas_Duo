@@ -36,7 +36,19 @@ async def AddSystem(ctx,MyName,myCall):
         await ctx.send(MyErrorMessage)
     
     
-        
+@client.command()
+async def RemoveSystem(ctx,MyName):
+    if not ctx.author in Atlas_DuoData:
+        Atlas_DuoData[ctx.author] = AtDuo_User(ctx.author)
+        await ctx.send("This user has no data, please create items then delete")
+        return None
+    MyReturnCode = Atlas_DuoData[ctx.author].RemoveProxy(MyName)
+    if MyReturnCode["ItemDeleted"] == True:
+        await ctx.send("Item Deleted successfully")
+    elif MyReturnCode["ItemFound"] == False:
+        await ctx.send("Requested proxy not found")
+    else:
+        await ctx.send("Unknown error has occurred.")
         
     
 # @client.command()

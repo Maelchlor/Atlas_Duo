@@ -56,13 +56,38 @@ class AtDuo_User:
     #     Responsedata = self.DoesProxyExist(myData)
     #     return Responsedata
         
-    def AddProxy(self,MyName,myCall,ctx):
+    def AddProxy(self,MyName,myCall,ctx = None):
         myData = AtDu_System(MyName,self.Name,myCall)
-        if ctx.message.attachments:
-            print(ctx.message.attachments[0].url)
-            myData.Image = ctx.message.attachments[0].url
+        if ctx != None:
+            if ctx.message.attachments:
+                print(ctx.message.attachments[0].url)
+                myData.Image = ctx.message.attachments[0].url
         Responsedata = self.DoesProxyExist(myData)
         return Responsedata
         
-    def RemoveProxy(self,ProxyName):
+    def RemoveProxy(self,ProxyName:str):
+        ErrorData = {
+            "ItemDeleted":False,
+            "ItemFound":False,
+            'HasError' : False,
+            "Entry":None
+        }
+        for entry in self.Systems:
+            print(entry)
+            if entry.Name == ProxyName:
+                print("Found it")
+                print(entry.Name)
+                #self.Systems.remove(entry.Name)
+                ErrorData["Entry"] = entry
+                ErrorData["ItemFound"] = True
+        if ErrorData["ItemFound"] == True:
+            self.Systems.remove(ErrorData["Entry"])
+            print("Item deleted?")
+            ErrorData["ItemDeleted"] = True
+        return ErrorData
+            
+    def UpdateProxyName(self,ProxyName,NewName):
+        pass
+    
+    def UpdateProxyImage(self,Proxyname,ctx):
         pass
