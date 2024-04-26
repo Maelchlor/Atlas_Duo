@@ -42,67 +42,13 @@ async def on_message(message):
     author_id = message.author.id
     guild_id = message.guild.id 
     author = message.author
-    #author = message.author.locale #not available at this level. will be available as an option for them to select when setting up the app. possibly via DM
     user_id = {"_id": author_id}
-    #print(str(message.content))
     if message.author.bot:
         return
-    #if re.match('oranges',message.content):
-    #   await message.channel.send('Here is a regex test for this word!') 
-    #print(str.lower(message.content))
-    await CheckforProxy(message)
-    if str.lower(message.content).startswith("replacemetext"): 
-        #print("Least we got here.")
-        myVar = message.content
-        RepliedMessage = ''
-        JSON_Data = {}
-        try:
-            print(str(message.reference.message_id))
-            RepliedMessage = await message.channel.fetch_message(message.reference.message_id)
-            print(RepliedMessage.content)
-            
-        except:
-            print("reference not it")
-        
-        JSON_Data["content"] = str(message.content[13:])
-        JSON_Data["username"] = str(message.author) + "_TestBot"
-        JSON_Data["avatar_url"] = "https://media.discordapp.net/attachments/1212866248535441469/1213210590412021770/image.png?ex=661054e9&is=65fddfe9&hm=0623351975726152753d694237ac7189ba1c0cd970551f11a96aea5879dfc2b4&=&format=webp&quality=lossless"
-        
-        if not RepliedMessage == "":
-            JSON_Data["embeds"] =[
-                {
-                    "description" : RepliedMessage.content,
-                    "title" : "Jump",
-                    "url" : RepliedMessage.jump_url 
-                }
-            ]
-        
-        
-        if None == message.reference:
-            print("This is not a reply")
-        else:
-            print("This is a reply")
-            #JSON_Data["message_reference"] = message.reference.message_id
-     
-        #print (JSON_Data)
-        My_Webhook = await PrepareHooks(message)
-        await Run_WebHook(My_Webhook,JSON_Data)
-        await message.delete()
-        
-    #if "roxy" in message.content.lower():
-        #await message.channel.send('Roxy has been mentioned. Should I get out the martini glasses or prepare for a wave of furries?')
     await client.process_commands(message)
     
-
-@client.command()
-async def hello(ctx):
-    await ctx.send("Hello! I am ATLAS DUO. I am a bot used for DIDOSDD systems.")
-    #myRandom = randrange(5,20)
-    #time.sleep(myRandom)
-    #await ctx.send("Maybe my first project should be a bit less ambitious, however knowing this family...")
-    #await ctx.send("Did you notice the delay? I waited " + str(myRandom) + " seconds to continue" )
+    await CheckforProxy(message)
     
-
     
 @client.command()
 async def Marco(ctx):
@@ -130,26 +76,7 @@ async def Game(ctx):
         await ctx.send("Alright, guess I can do something. maybe.")
 
 #decide what commands to do and how to do. need to figure out delete of lines and cleanup. unable brain operation
-
-
-
-@client.command()
-async def AddToTableTest(ctx,Value,MyTestContent):
-    await ctx.send("I am adding " + Value + " to the table as a Key. Adding " + MyTestContent + " as its value")
-    if ctx.author not in MyTestHashTable:
-        MyTestHashTable[ctx.author] = {}
-    MyTestHashTable[ctx.author][Value] = MyTestContent
-    
-@client.command()
-async def RetrieveTableTest(ctx,Value):
-    if ctx.author not in MyTestHashTable:
-        await ctx.send("this user hasn't stored anything")
-        return
-    if Value not in MyTestHashTable[ctx.author]:
-        await ctx.send("This value was not defined")
-        return
-    await ctx.send("I am Retrieving " + Value + " to the table, it returns " + MyTestHashTable[ctx.author][Value])
-    
+   
 @client.command()
 async def TestEmbed(ctx):
     embed = discord.Embed(title="Sample Embed", url="https://realdrewdata.medium.com/",
@@ -179,29 +106,8 @@ async def TestReact(ctx):
     await ctx.send(f"You reacted with: {reaction[0]}")  # With [0] we only display the emoji
 
 @client.command()
-async def CreateClass(ctx):
-    Value = 'myClassTest'
-    if ctx.author not in MyTestHashTable:
-        MyTestHashTable[ctx.author] = {}
-    if Value not in MyTestHashTable[ctx.author]:
-        MyUserData = AtDuo_User()
-        MyUserData.Name = ctx.author
-        MyTestHashTable[ctx.author][Value] = MyUserData
-        await ctx.send("Data Stored")
-        print(MyUserData.Name)
-        #print(MyUserData.__MyUUID)
-
-
-
-@client.command()
-async def TestWebhook(ctx):
-    myHook = await PrepareHooks(ctx)
-    data = {
-    "content" : "Testing a JSON object for this.",
-    "username" : "MyTestData"
-    }
-    await Run_WebHook(myHook,data)
-
-
+async def CreateBubbleWrap(ctx):
+    await ctx.send("Here is some bubble wrap")
+    await ctx.send("||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop|| ||pop||")
 
 client.run(Botkey)

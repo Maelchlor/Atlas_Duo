@@ -9,7 +9,7 @@ class AtDuo_User:
     #__MyUUID = uuid.uuid4()
     Systems = []
     IsAutoProxy = False
-    AutoProxyTarget = ''
+    AutoProxyTarget = None
     
     def __init__(self,Author):
         self.Name = Author
@@ -87,7 +87,77 @@ class AtDuo_User:
         return ErrorData
             
     def UpdateProxyName(self,ProxyName,NewName):
-        pass
+        ErrorData = {
+            "Updated":False,
+            "ItemFound":False,
+            'HasError' : False,
+            "Entry":None
+        }
+        for entry in self.Systems:
+            print(entry)
+            if entry.Name == ProxyName:
+                #self.Systems.remove(entry.Name)
+                ErrorData["Entry"] = entry
+                ErrorData["ItemFound"] = True
+        if ErrorData["ItemFound"] == True:
+            ErrorData["Entry"].Name = NewName
+            ErrorData["Updated"] = True
+        return ErrorData
     
-    def UpdateProxyImage(self,Proxyname,ctx):
-        pass
+    def UpdateProxyImage(self,Proxyname,NewURL):
+        ErrorData = {
+            "Updated":False,
+            "ItemFound":False,
+            'HasError' : False,
+            "Entry":None
+        }
+        for entry in self.Systems:
+            print(entry)
+            if entry.Name == Proxyname:
+                #self.Systems.remove(entry.Name)
+                ErrorData["Entry"] = entry
+                ErrorData["ItemFound"] = True
+        if ErrorData["ItemFound"] == True:
+            ErrorData["Entry"].Image = NewURL
+            ErrorData["Updated"] = True
+        return ErrorData
+    
+    def UpdateProxyCall(self,ProxyName,NewCall):
+        ErrorData = {
+            "Updated":False,
+            "ItemFound":False,
+            'HasError' : False,
+            "Entry":None
+        }
+        for entry in self.Systems:
+            print(entry)
+            if entry.Name == ProxyName:
+                #self.Systems.remove(entry.Name)
+                ErrorData["Entry"] = entry
+                ErrorData["ItemFound"] = True
+        if ErrorData["ItemFound"] == True:
+            ErrorData["Entry"].CallText = NewCall
+            ErrorData["Updated"] = True
+        return ErrorData
+
+    def SetAutoProxy(self,Target):
+        ErrorData = {
+            "Updated":False,
+            "ItemFound":False,
+            'HasError' : False,
+            "Entry":None
+        }
+        for entry in self.Systems:
+            print(entry)
+            if entry.Name == Target:
+                ErrorData["Entry"] = entry
+                ErrorData["ItemFound"] = True
+        if ErrorData["ItemFound"] == True:
+            self.AutoProxyTarget = ErrorData["Entry"]
+            self.IsAutoProxy = True
+            ErrorData["Updated"] = True
+        return ErrorData
+    
+    def StopAutoProxy(self):
+        self.AutoProxyTarget = None
+        self.IsAutoProxy = False

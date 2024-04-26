@@ -20,6 +20,12 @@ def AddTestSystem(Author:str,MyName,myCall):
 
 def DeleteProxy(Author:str,MyName):
     MyTestCommand[Author].RemoveProxy(MyName)
+
+def SaveProxyData():
+    pass
+
+def LoadProxyData():
+    pass
         
 AddTestSystem("Test_User","Test_Proxy","MyCall")
 print("Item added")
@@ -42,3 +48,4 @@ print(ItemDeleted)
 
 print(MyTestCommand["Test_User"])
 #print(MyTestCommand["MY_New_User"])
+
