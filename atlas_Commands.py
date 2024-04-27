@@ -143,8 +143,10 @@ async def UseAutoProxy(ctx,TargetProxy):
     else:
         await ctx.send(str(TargetProxy) + " AutoProxy is now active") 
 
+
+@client.command()
 async def StopAutoProxy(ctx):
-    await Atlas_DuoData[ctx.author].StopAutoProxy()
+    Atlas_DuoData[ctx.author].StopAutoProxy()
     await ctx.send("AutoProxy disabled")
 
 #planned space for checking a message for proxy implementation    

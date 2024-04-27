@@ -16,7 +16,10 @@ class AtDuo_User:
         self.Systems = []
         
     def __str__(self):
-        return f"{self.Name}, AutoProxy: {self.AutoProxyTarget}, SystemCount: {len(self.Systems)}"
+        myReturnData = f"{self.Name}, SystemCount: {len(self.Systems)}, isAutoProxy: {self.IsAutoProxy}"
+        if self.IsAutoProxy == True:
+            myReturnData = myReturnData + f", AutoProxyTarget: {self.AutoProxyTarget}"
+        return myReturnData
     
     def DoesProxyExist(self,myData):
         ErrorData = {

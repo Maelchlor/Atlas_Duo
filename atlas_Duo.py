@@ -45,9 +45,8 @@ async def on_message(message):
     user_id = {"_id": author_id}
     if message.author.bot:
         return
-    await client.process_commands(message)
-    
     await CheckforProxy(message)
+    await client.process_commands(message)
     
     
 @client.command()

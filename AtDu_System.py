@@ -6,6 +6,7 @@ import json
 
 class AtDu_System:
     Name = ''
+    DisplayName = ''
     Author = ''
     CallText = ''
     Image = ''
@@ -40,3 +41,6 @@ class AtDu_System:
         if not self.Image or not self.Image == "":
             json["avatar_url"] = self.Image
         return json
+    
+    def List_Result(self):
+        pass
