@@ -13,7 +13,7 @@ MyTestCommand = {}
 
 
 def AddTestSystem(Author:str,MyName,myCall):
-    myData = AtDu_System(MyName,Author,myCall)
+    myData = AtDu_System(MyName,Author,myCall) #what is this for?
     if not Author in MyTestCommand:
         MyTestCommand[Author] = AtDuo_User(Author)
     MyTestCommand[Author].AddProxy(MyName,myCall)
