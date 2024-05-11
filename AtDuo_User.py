@@ -5,14 +5,17 @@ from AtDu_System import *
 
 class AtDuo_User:
     
+    ID = ''
     Name = ''
-    #__MyUUID = uuid.uuid4()
+    #__MyUUID = uuid.uuid4() #this will be controlled by the saving mechanism, if it is SQL, mysql, or some other method, let the item doing the saving handle its ID system
     Systems = []
     IsAutoProxy = False
     AutoProxyTarget = None
     
-    def __init__(self,Author):
+    
+    def __init__(self,Author,ID):
         self.Name = Author
+        self.ID = ID
         self.Systems = []
         
     def __str__(self):
@@ -25,7 +28,8 @@ class AtDuo_User:
         ErrorData = {
             'ExistingProxy':False,
             'CallUsed' : False,
-            'NameUsed' : False
+            'NameUsed' : False,
+            'Success' : False
         }
         MyCode = 0
         for entry in self.Systems:
@@ -33,31 +37,14 @@ class AtDuo_User:
                 ErrorData["ExistingProxy"] = True
             if entry.CallText == myData.CallText:
                 ErrorData["CallUsed"] = True
-                MyCode = MyCode | 2
             if entry.Name == myData.Name:
                 ErrorData["NameUsed"] = True
-                MyCode = MyCode | 4
-            print(ErrorData)
         if ErrorData["ExistingProxy"] == False:
             self.Systems.append(myData)
             print("Data Saved")
             print("Your Proxy called " + str(myData.Name) + " has appeared to have been created")
-            MyCode = 1
-        else:
-            print("duplicate")
-            MyErrorMessage = "Your Proxy called " + str(myData.Name) + " appears to already exist."
-            if ErrorData["NameUsed"] == True:
-                MyErrorMessage = MyErrorMessage + " Requested Name in Use."
-            if ErrorData["CallUsed"] == True:
-                MyErrorMessage = MyErrorMessage + " Requested Call in Use."
-            print(MyErrorMessage)
-        return MyCode
-
-    # def AddProxy(self,MyName,myCall,ImageURL):
-    #     myData = AtDu_System(MyName,self.Name,myCall)
-    #     myData.Image = ImageURL
-    #     Responsedata = self.DoesProxyExist(myData)
-    #     return Responsedata
+            ErrorData["success"] = True
+        return ErrorData
         
     def AddProxy(self,MyName,myCall,ctx = None):
         myData = AtDu_System(MyName,self.Name,myCall)
@@ -80,7 +67,6 @@ class AtDuo_User:
             if entry.Name == ProxyName:
                 print("Found it")
                 print(entry.Name)
-                #self.Systems.remove(entry.Name)
                 ErrorData["Entry"] = entry
                 ErrorData["ItemFound"] = True
         if ErrorData["ItemFound"] == True:
@@ -99,7 +85,6 @@ class AtDuo_User:
         for entry in self.Systems:
             print(entry)
             if entry.Name == ProxyName:
-                #self.Systems.remove(entry.Name)
                 ErrorData["Entry"] = entry
                 ErrorData["ItemFound"] = True
         if ErrorData["ItemFound"] == True:
@@ -117,7 +102,6 @@ class AtDuo_User:
         for entry in self.Systems:
             print(entry)
             if entry.Name == Proxyname:
-                #self.Systems.remove(entry.Name)
                 ErrorData["Entry"] = entry
                 ErrorData["ItemFound"] = True
         if ErrorData["ItemFound"] == True:

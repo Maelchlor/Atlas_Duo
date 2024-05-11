@@ -12,6 +12,10 @@ from webhookCommand import *
 
 Atlas_DuoData = {}
 
+#I already see a complete rewrite in this area. you already learned some new stuff
+#the memory method used is able to work for a small scale, we will need to think larger. this will ultimately have to query the sql.
+
+
 @client.command()
 async def AddSystem(ctx,MyName,myCall):
     if len(MyName) > 32:
@@ -19,32 +23,34 @@ async def AddSystem(ctx,MyName,myCall):
         return
     await ctx.send("Placeholder WIP - data will purge after app resets")
     #myData = AtDu_System(MyName,ctx.author,myCall)
-    if not ctx.author in Atlas_DuoData:
-        Atlas_DuoData[ctx.author] = AtDuo_User(ctx.author)
+    
+    if not ctx.author.id in Atlas_DuoData:
+        Atlas_DuoData[ctx.author.id] = AtDuo_User(ctx.author,ctx.author.id)
     if len(ctx.message.attachments) > 1:
        await ctx.send("I have grabbed the first image submitted")
         #MyReturnCode = Atlas_DuoData[ctx.author].AddProxy(MyName,myCall,ctx.message.attachments[0].url)
     
         
-    MyReturnCode = Atlas_DuoData[ctx.author].AddProxy(MyName,myCall,ctx)
-    if MyReturnCode == 1:
+    MyReturnCode = Atlas_DuoData[ctx.author.id].AddProxy(MyName,myCall,ctx)
+    
+    if MyReturnCode["Success"] == True:
         await ctx.send("Your proxy appears to have been created")
     else:
         MyErrorMessage = "Your Proxy called " + str(MyName) + " appears to already exist."
-        if MyReturnCode & 2 == 2:
+        if MyReturnCode["NameUsed"] == True:
             MyErrorMessage = MyErrorMessage + " Requested Name in Use."
-        elif MyReturnCode & 4 == 4:
+        elif MyReturnCode["CallUsed"] == True:
             MyErrorMessage = MyErrorMessage + " Requested Call in Use."
         await ctx.send(MyErrorMessage)
     
     
 @client.command()
 async def RemoveSystem(ctx,MyName):
-    if not ctx.author in Atlas_DuoData:
-        Atlas_DuoData[ctx.author] = AtDuo_User(ctx.author)
+    if not ctx.author.id in Atlas_DuoData:
+        Atlas_DuoData[ctx.author.id] = AtDuo_User(ctx.author,ctx.author.id)
         await ctx.send("This user has no data, please create items then delete")
         return None
-    MyReturnCode = Atlas_DuoData[ctx.author].RemoveProxy(MyName)
+    MyReturnCode = Atlas_DuoData[ctx.author.id].RemoveProxy(MyName)
     if MyReturnCode["ItemDeleted"] == True:
         await ctx.send("Item Deleted successfully")
     elif MyReturnCode["ItemFound"] == False:
@@ -71,7 +77,7 @@ async def UpdateSystemCall(ctx,MyCurrent=None,MyNew=None):
         await ctx.send("Error: " +str(ErrorState["Message"]))
         return
     else:
-        MyReturnCode = Atlas_DuoData[ctx.author].UpdateProxyCall(MyCurrent,MyNew)
+        MyReturnCode = Atlas_DuoData[ctx.author.id].UpdateProxyCall(MyCurrent,MyNew)
         print(MyReturnCode)
         if MyReturnCode['Updated'] == False:
             if MyReturnCode['ItemFound'] == False:
@@ -96,7 +102,7 @@ async def UpdateSystemName(ctx,MyCurrent=None,MyNew=None):
         await ctx.send("Error: " +str(ErrorState["Message"]))
         return
     else:
-        MyReturnCode = Atlas_DuoData[ctx.author].UpdateProxyName(MyCurrent,MyNew)
+        MyReturnCode = Atlas_DuoData[ctx.author.id].UpdateProxyName(MyCurrent,MyNew)
         print(MyReturnCode)
         if MyReturnCode['Updated'] == False:
             if MyReturnCode['ItemFound'] == False:
@@ -122,7 +128,7 @@ async def UpdateSystemImage(ctx,MyCurrent=None):
         if len(ctx.message.attachments) > 0:
             NewUrl = ctx.message.attachments[0].url
                     
-        MyReturnCode = Atlas_DuoData[ctx.author].UpdateProxyImage(MyCurrent,NewUrl)
+        MyReturnCode = Atlas_DuoData[ctx.author.id].UpdateProxyImage(MyCurrent,NewUrl)
         print(MyReturnCode)
         if MyReturnCode['Updated'] == False:
             if MyReturnCode['ItemFound'] == False:
@@ -134,7 +140,7 @@ async def UpdateSystemImage(ctx,MyCurrent=None):
 
 @client.command()
 async def UseAutoProxy(ctx,TargetProxy):
-    MyReturnCode = Atlas_DuoData[ctx.author].SetAutoProxy(TargetProxy)
+    MyReturnCode = Atlas_DuoData[ctx.author.id].SetAutoProxy(TargetProxy)
     if MyReturnCode['Updated'] == False:
             if MyReturnCode['ItemFound'] == False:
                 await ctx.send("Passed system was not found")
@@ -146,32 +152,29 @@ async def UseAutoProxy(ctx,TargetProxy):
 
 @client.command()
 async def StopAutoProxy(ctx):
-    Atlas_DuoData[ctx.author].StopAutoProxy()
+    Atlas_DuoData[ctx.author.id].StopAutoProxy()
     await ctx.send("AutoProxy disabled")
 
 #planned space for checking a message for proxy implementation    
 async def CheckforProxy(message):
-    #check for autoproxy
-    #check for list of prefixes
-    #otherwise return as normal
     AD_ProxyResults = {
             'ProxyFound':False,
             'Entry' : None,
             'WebHooks' : None
         }
-    if message.author in Atlas_DuoData:
-        if Atlas_DuoData[message.author].IsAutoProxy == True:
-            print(str(message.author) + " has enabled autoproxy")
+    if message.author.id in Atlas_DuoData:
+        if Atlas_DuoData[message.author.id].IsAutoProxy == True:
+            print(str(message.author.id) + " has enabled autoproxy")
             AD_ProxyResults['ProxyFound'] = True
             AD_ProxyResults['WebHooks'] = await PrepareHooks(message)
-            AD_ProxyResults['Entry'] = Atlas_DuoData[message.author].AutoProxyTarget
+            AD_ProxyResults['Entry'] = Atlas_DuoData[message.author.id].AutoProxyTarget
             print("We Got here")
-            print(Atlas_DuoData[message.author])
-            print(Atlas_DuoData[message.author].AutoProxyTarget.Name)
+            print(Atlas_DuoData[message.author.id])
+            print(Atlas_DuoData[message.author.id].AutoProxyTarget.Name)
             print(AD_ProxyResults['Entry'])
             print("We Got here also")
         else:
-            for entry in Atlas_DuoData[message.author].Systems:
+            for entry in Atlas_DuoData[message.author.id].Systems:
                 if message.content.startswith(entry.CallText):
                     print("we got a possible hit")
                     AD_ProxyResults['ProxyFound'] = True
@@ -184,7 +187,7 @@ async def CheckforProxy(message):
         print("Did we write?")
         
         JSON_Data = AD_ProxyResults['Entry'].getJSONData()
-        if Atlas_DuoData[message.author].IsAutoProxy == False:
+        if Atlas_DuoData[message.author.id].IsAutoProxy == False:
             JSON_Data["content"] = str(message.content[len(AD_ProxyResults['Entry'].CallText):])
         else:
             JSON_Data["content"] = str(message.content)
@@ -196,7 +199,7 @@ async def CheckforProxy(message):
             
         except:
             pass
-        
+        #it uses a username, link with the reply message, and then the actual replied message
         if not RepliedMessage == "":
             JSON_Data["embeds"] =[
                 {

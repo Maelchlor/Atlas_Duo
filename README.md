@@ -4,17 +4,13 @@ A planned Discord bot. Details added over time
 
 Branch Strategy
 Main > Active bot. DO NOT EDIT THIS BRANCH
-is_online = true
+DEV > Do not actively edit this without approval, branch from here to do specific jobs
 
-DEV > Test code. direct editing is acceptible, not recommended
-
-Sub branch off of dev for specific projects, pull to dev through request then after dev testing is done pull to main to distribute
+You may branch from a branch, just make sure to merge your way back up the branches to dev, do not go from a sub branch of a sub branch back to dev
 
 
-MAIN will be locked as soon as I figure out how to do so.
+MAIN is locked and will require merge requests.
 
-Later this will be open to the public, I plan on licensing this eventually as an open source or a restricted license. not sure yet. 
+Licence type, legal terms will be fixed shortly.
 
-Basically I want to allow people to contribute, however if someone steals it and starts to sell I can make sure to stop it. 
-
-Readme needs filled out better... this is still mostly placeholder data
+I allow use of this code as long as it is not sold or commercialized

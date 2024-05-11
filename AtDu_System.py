@@ -1,17 +1,25 @@
 #for managing the class for Systems/alts
 #store the Discord name, the name of the altar, and the path for the icon
-#in the database, ID, ownerID, Name,Calltext,ImageURL,Pronouns,Bio
+#in the database, ID, ownerID, Name, Calltext, ImageURL, Pronouns, Bio
 #see if you need to add anything else to the systems before you finalize the DB design
+#the limit of the systems is yet to be determined within the software. need to setup the database
+#add tags, for now placeholders are available
+#proxy avatar rotation? it is a request. best way I can think of to do that would involve me storing multiple values, investigate further on this one
+#remember we will need to import from other previous applications. 
+#add a handle for if a system is under another system. investigate that further
 import json
 
 class AtDu_System:
     Name = ''
     DisplayName = ''
-    Author = ''
+    ParentUser = ''
     CallText = ''
     Image = ''
     Pronouns = ''
     Bio = ''
+    pretag = None
+    PostTag = None
+    ParentSystem = None
     
     def __str__(self):
         return f"{self.Author} {self.Name} {self.CallText}"

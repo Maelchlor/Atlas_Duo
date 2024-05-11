@@ -30,7 +30,6 @@ async def PrepareHooks(ctx):
             Iexist = True
             myHook = webhook
     if Iexist == False:
-        #print("No hook detected, creating")
         await ctx.channel.create_webhook(name='Atlas Duo WebHook')
         webhooks = await ctx.channel.webhooks()
         for webhook in webhooks:
@@ -45,8 +44,6 @@ async def Run_WebHook(Webhook,JSON_Data):
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
         print(err)
-    #else:
-    #    print("Payload delivered successfully, code {}.".format(result.status_code))
 
 @client.command()
 @commands.has_permissions(manage_messages=True)
