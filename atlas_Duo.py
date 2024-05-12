@@ -28,6 +28,7 @@ from AtDuo_User import *
 from atlas_Commands import *
 from webhookCommand import *
 
+#replace this with a datatable set. we need to emulate as though we are operating on a server
 MyTestHashTable = {}
 
 @client.event 
