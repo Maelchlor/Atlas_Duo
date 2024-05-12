@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands
+import pyodbc
+
 from AtDu_System import *
 from AtDuo_User import *
 
@@ -14,6 +15,14 @@ Atlas_DuoData = {}
 
 #I already see a complete rewrite in this area. you already learned some new stuff
 #the memory method used is able to work for a small scale, we will need to think larger. this will ultimately have to query the sql.
+pycnxn = pyodbc.connect("Driver={SQL Server};"
+                      "Server=.\SQLEXPRESS;"
+                      "Database=Atlas_Duo;"
+                      "Trusted_Connection=yes;")
+cursor = pycnxn.cursor()
+cursor.execute('SELECT * FROM AT_Duo_User')
+for row in cursor:
+    print('row = %r' % (row,))
 
 
 @client.command()
