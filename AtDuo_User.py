@@ -7,7 +7,6 @@ class AtDuo_User:
     
     ID = ''
     Name = ''
-    #__MyUUID = uuid.uuid4() #this will be controlled by the saving mechanism, if it is SQL, mysql, or some other method, let the item doing the saving handle its ID system
     Systems = []
     IsAutoProxy = False
     AutoProxyTarget = None
@@ -31,7 +30,8 @@ class AtDuo_User:
             'NameUsed' : False,
             'Success' : False
         }
-        MyCode = 0
+        
+        
         for entry in self.Systems:
             if (entry.CallText == myData.CallText or entry.Name == myData.Name):
                 ErrorData["ExistingProxy"] = True

@@ -1,0 +1,51 @@
+Notes:
+
+Data tables are going to be made for this. 
+User table: stores GUID and author name, nothing more needed, might store Pronouns, items in square bracket are tbd, might be an XML field, it might be a series of field
+    columns:
+        GUID
+        author
+        Pronouns
+        AutoProxyOn
+        AutoProxyTarget (if blank shut off autoproxyon)
+        UserNotes
+        [config data]
+
+AD_Systems table: stores information on the AD_Systems
+    columns:
+        GUID
+        ParentUserGUID
+        ParentSystemGUID
+        SystemName
+        SystemDisplayName
+        CallText
+        PrefixTags
+        SuffixTags
+        Pronouns
+        UserNotes
+        Bio
+
+
+AD_SystemHistory table: stores records of any time DUO is used. this may or may not ultimately be used, 
+    Columns:
+
+AdminServerConfiguration table: stores server specific configuration data, run by admins of the server
+    Columns:
+        ServerGUID
+        blacklist (boolean, default 0, aka false) (used to have specific areas where webhooks/proxies are NOT allowed)
+        LogChannel
+        [config]
+
+AdminServerRoomsConfig table: for storing adminserverConfig blacklist or whitelist
+    Columns:
+        channelGUID
+        ServerGUID
+
+UserServerConfiguration table: used to store a user specifically enabling autoproxy on a specific server, preparing for some edge cases here.
+    Columns:
+        GUID
+        ParentUserGUID
+        serverGUID
+        AutoProxy
+        TargetProxy
+

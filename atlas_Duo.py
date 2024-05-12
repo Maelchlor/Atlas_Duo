@@ -43,8 +43,8 @@ async def on_message(message):
     author_id = message.author.id
     guild_id = message.guild.id 
     author = message.author
-    print(author_id)
-    print(author)
+    #print(author_id)
+    #print(author)
     user_id = {"_id": author_id}
     if message.author.bot:
         return

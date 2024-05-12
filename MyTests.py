@@ -1,51 +1,31 @@
-import json
-import time
-import re
-import aiohttp
-import asyncio
-import json
-import requests
 
-from AtDu_System import *
-from AtDuo_User import *
+from SQLDatabaseComponents import *
 
-MyTestCommand = {}
+#GetUserData(243544194298150913)
+#GetUserData('ABCD')
 
+#MyResults = CheckIfProxyExists('Test111-','TestProxy11')
+#print(MyResults)
 
-def AddTestSystem(Author:str,MyName,myCall):
-    myData = AtDu_System(MyName,Author,myCall) #what is this for?
-    if not Author in MyTestCommand:
-        MyTestCommand[Author] = AtDuo_User(Author)
-    MyTestCommand[Author].AddProxy(MyName,myCall)
+#MyResults = CheckIfProxyExists('Test-','TestProxy1')
+#print(MyResults)
+#CheckIfProxyExists('Test1-','TestProxy1')
 
-def DeleteProxy(Author:str,MyName):
-    MyTestCommand[Author].RemoveProxy(MyName)
+#checkForProxyCall('Test-This is a test message',str(243544194298150913))
+#DeleteProxy(str(243544194298150913),"AnotherBot")
+CreateUserData(str(243544194298150914),"TestUser")
+#UserData = getSpecificProxy('C569CF76-4DE0-4E7B-8A4E-1F9E093C3EB6')
+#for row in UserData:
+#    print(row[5])
+# MyResults = CheckIfProxyExists('MoreTest-','AnotherBot',str(243544194298150913))
 
-def SaveProxyData():
-    pass
-
-def LoadProxyData():
-    pass
-        
-AddTestSystem("Test_User","Test_Proxy","MyCall")
-print("Item added")
-AddTestSystem("Test_User","Test_Proxy","MyCall") #error expected
-ItemDeleted = DeleteProxy("Test_User","Test_Proxy") #should work
-print(ItemDeleted)
-ItemDeleted = DeleteProxy("Test_User","Test_Proxy") #should error
-print(ItemDeleted)
-AddTestSystem("Test_User","Test_Proxy","MyCall")#should work
-DeleteProxy("Test_User","Test_Proxy") #should work
-print(ItemDeleted)
-AddTestSystem("Test_User","Test_Proxy","MyCall")
-DeleteProxy("Test_User","Test_Proxy")
-print(ItemDeleted)
-
-#AddTestSystem("Test_User","Test_Proxy","MyCall") #should error
-#AddTestSystem("MY_New_User","Test_Proxy","MyCall") #should pass
-#AddTestSystem("MyOtherUser","Test_Proxy","MyCall") #should pass
-#AddTestSystem("YetAnotherUser","Test_Proxy","MyCall") #should pass
-
-print(MyTestCommand["Test_User"])
-#print(MyTestCommand["MY_New_User"])
-
+# if MyResults['ExistingProxy'] == False:
+#     CreateProxy(str(243544194298150913),"AnotherBot",'','MoreTest-')
+# elif MyResults['ExistingProxy'] == True:
+#     print("test")
+#     DeleteProxy(str(243544194298150913),"AnotherBot")
+# else:
+#     print("Got Here")
+#MyResults = CheckIfProxyExists('SecurityMoreTest-','drop database Atlas_duo')
+#if MyResults['ExistingProxy'] == False:
+#    CreateProxy(str(243544194298150913),"drop database Atlas_duo",'','SecurityMoreTest-')
