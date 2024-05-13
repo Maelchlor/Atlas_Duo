@@ -12,7 +12,7 @@ def ad_GetConnector():
 def getUserAutoProxyState(AuthorId):
     cursor = ad_GetConnector().cursor()
     cursor.execute('SELECT AutoProxyOn,AutoProxyTarget FROM AT_Duo_User where authorid = ''%r''' %(AuthorId)) 
-    return cursor.fetchone()
+    return cursor
 
 def GetUserData(AuthorId):
     cursor = ad_GetConnector().cursor()
@@ -40,6 +40,7 @@ def getUserProxy(AuthorID):
         print('row = %r' % (row,))
         
 def CheckIfProxyExists(CallText,DisplayName,AuthorID):
+    
     MyResult = {
             'ExistingProxy':False,
             'CallUsed' : False,
@@ -69,7 +70,7 @@ def checkForProxyCall(MessageContent,CallID):
 
 def CreateUserData(UserID,User):
     connection = ad_GetConnector()
-    #print('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
+    print('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
     connection.cursor().execute('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
     connection.commit()
 
@@ -84,22 +85,24 @@ def CreateProxy(UserID,displayname,ImageUrl,calltext):
     
 def DeleteProxy(UserID,DisplayName):
     connection = ad_GetConnector()
-    connection.cursor().execute('delete from AT_Duo_System where Displayname = \''+ DisplayName+ '\' AND userGUID = ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'))')
+    connection.cursor().execute('delete from AT_Duo_System where Displayname = \''+ DisplayName+ '\' AND userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'))')
     connection.commit()
     
 def UpdateDisplayName(UserID,CurrentName,UpdatedName):
     connection = ad_GetConnector()
-    connection.cursor().execute('update at_duo_system set DisplayName = \'' + UpdatedName + '\' where userGUID = ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
+    connection.cursor().execute('update at_duo_system set DisplayName = \'' + UpdatedName + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
     connection.commit()
     
 def UpdateCallText(UserID,UpdatedCall,CurrentName):
     connection = ad_GetConnector()
-    connection.cursor().execute('update at_duo_system set CallText = \'' + UpdatedCall + '\' where userGUID = ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
+    connection.cursor().execute('update at_duo_system set CallText = \'' + UpdatedCall + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
     connection.commit()
 
 def UpdateImageURL(UserID,NewImage,CurrentName):
     connection = ad_GetConnector()
-    connection.cursor().execute('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
+    print(NewImage)
+    print('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
+    connection.cursor().execute('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
     connection.commit()
 
 def EnableAutoProxy(UserID,DisplayName):

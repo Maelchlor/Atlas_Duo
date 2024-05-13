@@ -9,7 +9,7 @@ intents = discord.Intents.default()
 intents.message_content = True 
 intents.messages = True 
 intents.guilds = True
-client = commands.Bot(command_prefix = ['!','ad!','$'], intents=intents)
+client = commands.Bot(command_prefix = ['!','ad!','$','atlas!','atlas;'], intents=intents)
 from webhookCommand import *
 
 Atlas_DuoData = {}
@@ -19,16 +19,15 @@ async def AddSystem(ctx,MyName,myCall):
     if len(MyName) > 32:
         await ctx.send("Discord has a 32 character limit on names. A shorter name is required")
         return
-    await ctx.send("Placeholder WIP - data will purge after app resets")
     userData = GetUserData(str(ctx.author.id))
     if userData.rowcount == 0:
-        CreateUserData(ctx.author.id,ctx.author)
+        CreateUserData(str(ctx.author.id),str(ctx.author))
     ProxyStatus = CheckIfProxyExists(myCall,MyName,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == False:
         if len(ctx.message.attachments) > 1:
-            CreateProxy(str(ctx.author.id),MyName,'',myCall)
+            CreateProxy(str(ctx.author.id),MyName,str(ctx.message.attachments[0].url),myCall)
         else:
-            CreateProxy(str(ctx.author.id),MyName,'ctx.message.attachments[0].url',myCall)
+            CreateProxy(str(ctx.author.id),MyName,'',myCall)
         await ctx.send("Your proxy appears to have been created")
     else:
         MyErrorMessage = "Your Proxy called " + str(MyName) + " appears to already exist."
@@ -43,10 +42,10 @@ async def AddSystem(ctx,MyName,myCall):
 async def RemoveSystem(ctx,MyName):
     ProxyStatus = CheckIfProxyExists('',MyName,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == True:
-        DeleteProxy(ctx.author.id,MyName)
-        ctx.send(MyName + "System has been deleted")
+        DeleteProxy(str(ctx.author.id),MyName)
+        await ctx.send(MyName + "System has been deleted")
     else:
-        ctx.send("No Matching System is listed under this user")
+        await ctx.send("No Matching System is listed under this user")
         
 @client.command()
 async def ImportSystem(ctx):
@@ -69,12 +68,12 @@ async def UpdateSystemCall(ctx,MyName=None,MyNewCall=None):
     else:
         ProxyStatus = CheckIfProxyExists(MyNewCall,MyName,str(ctx.author.id))
         if ProxyStatus['ExistingProxy'] == True & ProxyStatus["CallUsed"] == False:
-            UpdateCallText(ctx.author.id,MyNewCall,MyName)
-            ctx.send("Requested update has completed")
+            UpdateCallText(str(ctx.author.id),MyNewCall,MyName)
+            await ctx.send("Requested update has completed")
         elif ProxyStatus['ExistingProxy'] == True & ProxyStatus["CallUsed"] == True:
-            ctx.send("Updated call is in use.")
+            await ctx.send("Updated call is in use.")
         elif ProxyStatus['ExistingProxy'] == False:
-            ctx.send("Requested proxy does not exist")
+            await ctx.send("Requested proxy does not exist")
             
 @client.command()
 async def UpdateSystemName(ctx,MyCurrentName=None,MyNewName=None):
@@ -94,11 +93,11 @@ async def UpdateSystemName(ctx,MyCurrentName=None,MyNewName=None):
         ProxyStatus = CheckIfProxyExists('',MyCurrentName,str(ctx.author.id))
         ProxyStatusupd = CheckIfProxyExists('',MyNewName,str(ctx.author.id))
         if ProxyStatus['ExistingProxy'] == True & ProxyStatusupd["ExistingProxy"] == False:
-            UpdateDisplayName(ctx.author.id,MyCurrentName,MyNewName)
+            UpdateDisplayName(str(ctx.author.id),MyCurrentName,MyNewName)
         elif ProxyStatus['ExistingProxy'] == False:
-            ctx.send("Defined system not found")
+            await ctx.send("Defined system not found")
         elif ProxyStatus['ExistingProxy'] == True & ProxyStatusupd["ExistingProxy"] == True:
-            ctx.send("The new name is already in use")
+            await ctx.send("The new name is already in use")
 
 @client.command()
 async def UpdateSystemImage(ctx,MyCurrentName=None):
@@ -114,25 +113,27 @@ async def UpdateSystemImage(ctx,MyCurrentName=None):
     else:
         NewURL = ''
         if len(ctx.message.attachments) > 0:
-            NewUrl = ctx.message.attachments[0].url
+            NewUrl = str(ctx.message.attachments[0].url)
+            print(ctx.message.attachments[0].url)
         else:
-            ctx.send("no image provided, this will clear existing image")
-        ProxyStatus = CheckIfProxyExists('',MyCurrentName,ctx.author.id)
+            await ctx.send("no image provided, this will clear existing image")
+        ProxyStatus = CheckIfProxyExists('',MyCurrentName,str(ctx.author.id))
         if ProxyStatus['ExistingProxy'] == True:
-            UpdateImageURL(str(ctx.author.id),NewURL,MyCurrentName)
-            ctx.send("Image updated")    
+            print (NewUrl)
+            UpdateImageURL(str(ctx.author.id),NewUrl,MyCurrentName)
+            await ctx.send("Image updated")    
         elif ProxyStatus['ExistingProxy'] == False:
-            ctx.send("Proxy submitted is not found")
+            await ctx.send("Proxy submitted is not found")
         
 
 @client.command()
 async def UseAutoProxy(ctx,TargetProxy):
-    ProxyStatus = CheckIfProxyExists('',TargetProxy,ctx.author.id)
+    ProxyStatus = CheckIfProxyExists('',TargetProxy,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == True:
         EnableAutoProxy(str(ctx.author.id),TargetProxy)
-        ctx.send("AutoProxy Enabled")
+        await ctx.send("AutoProxy Enabled")
     else:
-        ctx.send("Requested proxy does not exist")
+        await ctx.send("Requested proxy does not exist")
 
 
 @client.command()
@@ -149,7 +150,7 @@ async def CheckforProxy(message):
     }
     UserData = getUserAutoProxyState(str(message.author.id))
     if UserData.rowcount == 0:
-        print("no user data")
+        pass
     else:
         for row in UserData:
             if row[0] == True:
@@ -193,4 +194,4 @@ async def CheckforProxy(message):
                     }
                 ]
             await Run_WebHook(AD_ProxyResults['WebHooks'],JSON_Data)
-            #await message.delete()
+            await message.delete()

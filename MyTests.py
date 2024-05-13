@@ -13,7 +13,15 @@ from SQLDatabaseComponents import *
 
 #checkForProxyCall('Test-This is a test message',str(243544194298150913))
 #DeleteProxy(str(243544194298150913),"AnotherBot")
-CreateUserData(str(243544194298150914),"TestUser")
+#CreateUserData(str(243544194298150914),"TestUser")
+#CreateProxy(str(243544194298150914),'MyTestUser','','Test-')
+#CreateProxy(str(243544194298150914),'MyTestUser1','','Test1-')
+#CreateProxy(str(243544194298150914),'MyTestUser2','','Test2-')
+#CreateProxy(str(243544194298150914),'MyTestUser3','','Test3-')
+#DeleteProxy(str(243544194298150914),'MyTestUser')
+#DeleteProxy(str(243544194298150914),'MyTestUser1')
+#DeleteProxy(str(243544194298150914),'MyTestUser2')
+
 #UserData = getSpecificProxy('C569CF76-4DE0-4E7B-8A4E-1F9E093C3EB6')
 #for row in UserData:
 #    print(row[5])
