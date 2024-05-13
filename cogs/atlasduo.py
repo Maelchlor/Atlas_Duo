@@ -6,6 +6,13 @@ from webhookCommand import *
 from discord.ext.commands import Context
 from SQLDatabaseComponents import *
 
+intents = discord.Intents.default() 
+intents.message_content = True 
+intents.messages = True 
+intents.guilds = True
+client = commands.Bot(command_prefix = ['!','ad!','$','atlas!','atlas;'], intents=intents)
+
+
 # is this all getting temp stored in the Atlas_DuoData?
 
 class AtlasDuo(commands.Cog, name="atlasduo"):
