@@ -1,33 +1,33 @@
 import discord
-
 from discord.ext import commands
 from AtDu_System import *
 from AtDuo_User import *
+from webhookCommand import *
+from discord.ext.commands import Context
 from SQLDatabaseComponents import *
 
-intents = discord.Intents.default() 
-intents.message_content = True 
-intents.messages = True 
-intents.guilds = True
-client = commands.Bot(command_prefix = ['!','ad!','$','atlas!','atlas;'], intents=intents)
-from webhookCommand import *
+# is this all getting temp stored in the Atlas_DuoData?
 
-#Atlas_DuoData = {}
+class AtlasDuo(commands.Cog, name="atlasduo"):
+    def __init__(self, bot):
+        self.bot = bot
+        self.Atlas_DuoData = {}
 
-@client.command()
+    
+@commands.hybrid_command()
 async def add(ctx,MyName,myCall):
     await AddSystem(ctx,MyName,myCall)
-@client.command()
+@commands.hybrid_command()
 async def Add(ctx,MyName,myCall):
     await AddSystem(ctx,MyName,myCall)
-@client.command()
+@commands.hybrid_command()
 async def Ad(ctx,MyName,myCall):
     await AddSystem(ctx,MyName,myCall)
-@client.command()
+@commands.hybrid_command()
 async def ad(ctx,MyName,myCall):
     await AddSystem(ctx,MyName,myCall)
 
-@client.command()
+@commands.hybrid_command()
 async def AddSystem(ctx,MyName,myCall):
     if len(MyName) > 32:
         await ctx.send("Discord has a 32 character limit on names. A shorter name is required")
@@ -52,24 +52,24 @@ async def AddSystem(ctx,MyName,myCall):
             MyErrorMessage = MyErrorMessage + " Requested Call in Use."
         await ctx.send(MyErrorMessage)
    
-@client.command()
+@commands.hybrid_command()
 async def Remove(ctx,MyName):
     await RemoveSystem(ctx,MyName)
-@client.command()
+@commands.hybrid_command()
 async def Rm(ctx,MyName):
     await RemoveSystem(ctx,MyName)
-@client.command()
+@commands.hybrid_command()
 async def Del(ctx,MyName):
     await RemoveSystem(ctx,MyName)
-@client.command()
+@commands.hybrid_command()
 async def remove(ctx,MyName):
     await RemoveSystem(ctx,MyName)
-@client.command()
+@commands.hybrid_command()
 async def rm(ctx,MyName):
     await RemoveSystem(ctx,MyName)
 
 #add an optional react stage to this so that the user has the ability to react to confirm
-@client.command()
+@commands.hybrid_command()
 async def RemoveSystem(ctx,MyName):
     ProxyStatus = CheckIfProxyExists('',MyName,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == True:
@@ -78,11 +78,11 @@ async def RemoveSystem(ctx,MyName):
     else:
         await ctx.send("No Matching System is listed under this user")
         
-@client.command()
+@commands.hybrid_command()
 async def ImportSystem(ctx):
     await ctx.send("this is a placeholder for importing systems\nThis is not yet implemented")
 
-@client.command()
+@commands.hybrid_command()
 async def UpdateSystemCall(ctx,MyName=None,MyNewCall=None):
     ErrorState = {}
     ErrorState["hasError"] = False
@@ -110,7 +110,7 @@ async def UpdateSystemCall(ctx,MyName=None,MyNewCall=None):
         elif ProxyStatus['ExistingProxy'] == False:
             await ctx.send("Requested proxy does not exist")
             
-@client.command()
+@commands.hybrid_command()
 async def UpdateSystemName(ctx,MyCurrentName=None,MyNewName=None):
     ErrorState = {}
     ErrorState["hasError"] = False
@@ -138,7 +138,7 @@ async def UpdateSystemName(ctx,MyCurrentName=None,MyNewName=None):
             await ctx.send("The new name is already in use")
 
 #throws error when no image is passed
-@client.command()
+@commands.hybrid_command()
 async def UpdateSystemImage(ctx,MyCurrentName=None):
     ErrorState = {}
     ErrorState["hasError"] = False
@@ -164,7 +164,7 @@ async def UpdateSystemImage(ctx,MyCurrentName=None):
             await ctx.send("Proxy submitted is not found")
         
 
-@client.command()
+@commands.hybrid_command()
 async def UseAutoProxy(ctx,TargetProxy):
     ProxyStatus = CheckIfProxyExists('',TargetProxy,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == True:
@@ -174,7 +174,7 @@ async def UseAutoProxy(ctx,TargetProxy):
         await ctx.send("Requested proxy does not exist")
 
 
-@client.command()
+@commands.hybrid_command()
 async def StopAutoProxy(ctx):
     DisableAutoProxy(str(ctx.author.id))
     await ctx.send("AutoProxy disabled")
@@ -236,3 +236,6 @@ async def CheckforProxy(message):
                 ]
             await Run_WebHook(AD_ProxyResults['WebHooks'],JSON_Data)
             await message.delete()
+
+def setup(bot):
+    bot.add_cog(AtlasDuoCog(bot))
