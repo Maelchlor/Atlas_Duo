@@ -70,22 +70,22 @@ def checkForProxyCall(MessageContent,CallID):
 
 def CreateUserData(UserID,User):
     connection = ad_GetConnector()
-    print('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
+    #print('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
     connection.cursor().execute('insert into AT_Duo_User (author,AuthorId ) values (\''+User+ '\',\''+UserID+'\')')
     connection.commit()
 
-def CreateProxy(UserID,displayname,ImageUrl,calltext):
+def CreateProxy(UserID,displayname,ImageURL,calltext):
     connection = ad_GetConnector()
     #SQLCOmmand = ()'insert into AT_Duo_System (userGUID,DisplayName,ImageURL,Calltext) values ((select userguid from AT_Duo_User where AuthorId =')
-    #print('insert into AT_Duo_System (userGUID,DisplayName,ImageURL,Calltext) values ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'), \''+displayname+'\', \''+ImageUrl+'\',\''+ calltext+ '\')')
-    connection.cursor().execute('insert into AT_Duo_System (userGUID,DisplayName,ImageURL,Calltext) values ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'), \'' + displayname + '\', \'' + ImageUrl + '\',\'' + calltext + '\')')
+    #print('insert into AT_Duo_System (userGUID,DisplayName,ImageURL,Calltext) values ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'), \''+displayname+'\', \''+ImageURL+'\',\''+ calltext+ '\')')
+    connection.cursor().execute('insert into AT_Duo_System (userGUID,DisplayName,ImageURL,Calltext) values ((select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'), \'' + displayname + '\', \'' + ImageURL + '\',\'' + calltext + '\')')
     connection.commit()
     
     #print(connection.)
     
 def DeleteProxy(UserID,DisplayName):
     connection = ad_GetConnector()
-    connection.cursor().execute('delete from AT_Duo_System where Displayname = \''+ DisplayName+ '\' AND userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\'))')
+    connection.cursor().execute('delete from AT_Duo_System where Displayname = \''+ DisplayName+ '\' AND userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\')')
     connection.commit()
     
 def UpdateDisplayName(UserID,CurrentName,UpdatedName):
@@ -100,8 +100,8 @@ def UpdateCallText(UserID,UpdatedCall,CurrentName):
 
 def UpdateImageURL(UserID,NewImage,CurrentName):
     connection = ad_GetConnector()
-    print(NewImage)
-    print('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
+    #print(NewImage)
+    #print('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
     connection.cursor().execute('update at_duo_system set ImageURL = \'' + NewImage + '\' where userGUID = (select userguid from AT_Duo_User where AuthorId = \'' + UserID + '\') AND Displayname = \'' +CurrentName + '\'')
     connection.commit()
 

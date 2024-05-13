@@ -15,6 +15,19 @@ from webhookCommand import *
 Atlas_DuoData = {}
 
 @client.command()
+async def add(ctx,MyName,myCall):
+    await AddSystem(ctx,MyName,myCall)
+@client.command()
+async def Add(ctx,MyName,myCall):
+    await AddSystem(ctx,MyName,myCall)
+@client.command()
+async def Ad(ctx,MyName,myCall):
+    await AddSystem(ctx,MyName,myCall)
+@client.command()
+async def ad(ctx,MyName,myCall):
+    await AddSystem(ctx,MyName,myCall)
+
+@client.command()
 async def AddSystem(ctx,MyName,myCall):
     if len(MyName) > 32:
         await ctx.send("Discord has a 32 character limit on names. A shorter name is required")
@@ -24,9 +37,11 @@ async def AddSystem(ctx,MyName,myCall):
         CreateUserData(str(ctx.author.id),str(ctx.author))
     ProxyStatus = CheckIfProxyExists(myCall,MyName,str(ctx.author.id))
     if ProxyStatus['ExistingProxy'] == False:
-        if len(ctx.message.attachments) > 1:
+        if len(ctx.message.attachments) > 0:
+            print(str(ctx.message.attachments[0].url))
             CreateProxy(str(ctx.author.id),MyName,str(ctx.message.attachments[0].url),myCall)
         else:
+            print("NoImage")
             CreateProxy(str(ctx.author.id),MyName,'',myCall)
         await ctx.send("Your proxy appears to have been created")
     else:
@@ -36,7 +51,23 @@ async def AddSystem(ctx,MyName,myCall):
         elif ProxyStatus["CallUsed"] == True:
             MyErrorMessage = MyErrorMessage + " Requested Call in Use."
         await ctx.send(MyErrorMessage)
-    
+   
+@client.command()
+async def Remove(ctx,MyName):
+    await RemoveSystem(ctx,MyName)
+@client.command()
+async def Rm(ctx,MyName):
+    await RemoveSystem(ctx,MyName)
+@client.command()
+async def Del(ctx,MyName):
+    await RemoveSystem(ctx,MyName)
+@client.command()
+async def remove(ctx,MyName):
+    await RemoveSystem(ctx,MyName)
+@client.command()
+async def rm(ctx,MyName):
+    await RemoveSystem(ctx,MyName)
+
 #add an optional react stage to this so that the user has the ability to react to confirm
 @client.command()
 async def RemoveSystem(ctx,MyName):
@@ -67,10 +98,14 @@ async def UpdateSystemCall(ctx,MyName=None,MyNewCall=None):
         return
     else:
         ProxyStatus = CheckIfProxyExists(MyNewCall,MyName,str(ctx.author.id))
-        if ProxyStatus['ExistingProxy'] == True & ProxyStatus["CallUsed"] == False:
+        print(ProxyStatus)
+        print(ProxyStatus['ExistingProxy'] == True)
+        print(ProxyStatus["CallUsed"] == False)
+        print(ProxyStatus['ExistingProxy'] == True and ProxyStatus["CallUsed"] == False)
+        if ProxyStatus['ExistingProxy'] == True and ProxyStatus["CallUsed"] == False:
             UpdateCallText(str(ctx.author.id),MyNewCall,MyName)
             await ctx.send("Requested update has completed")
-        elif ProxyStatus['ExistingProxy'] == True & ProxyStatus["CallUsed"] == True:
+        elif ProxyStatus['ExistingProxy'] == True and ProxyStatus["CallUsed"] == True:
             await ctx.send("Updated call is in use.")
         elif ProxyStatus['ExistingProxy'] == False:
             await ctx.send("Requested proxy does not exist")
@@ -92,13 +127,17 @@ async def UpdateSystemName(ctx,MyCurrentName=None,MyNewName=None):
     else:
         ProxyStatus = CheckIfProxyExists('',MyCurrentName,str(ctx.author.id))
         ProxyStatusupd = CheckIfProxyExists('',MyNewName,str(ctx.author.id))
-        if ProxyStatus['ExistingProxy'] == True & ProxyStatusupd["ExistingProxy"] == False:
+        print(ProxyStatus)
+        print(ProxyStatusupd)
+        if ProxyStatus['ExistingProxy'] == True and ProxyStatusupd["ExistingProxy"] == False:
             UpdateDisplayName(str(ctx.author.id),MyCurrentName,MyNewName)
+            await ctx.send("Update Completed")
         elif ProxyStatus['ExistingProxy'] == False:
             await ctx.send("Defined system not found")
-        elif ProxyStatus['ExistingProxy'] == True & ProxyStatusupd["ExistingProxy"] == True:
+        elif ProxyStatus['ExistingProxy'] == True and ProxyStatusupd["ExistingProxy"] == True:
             await ctx.send("The new name is already in use")
 
+#throws error when no image is passed
 @client.command()
 async def UpdateSystemImage(ctx,MyCurrentName=None):
     ErrorState = {}
@@ -119,7 +158,6 @@ async def UpdateSystemImage(ctx,MyCurrentName=None):
             await ctx.send("no image provided, this will clear existing image")
         ProxyStatus = CheckIfProxyExists('',MyCurrentName,str(ctx.author.id))
         if ProxyStatus['ExistingProxy'] == True:
-            print (NewUrl)
             UpdateImageURL(str(ctx.author.id),NewUrl,MyCurrentName)
             await ctx.send("Image updated")    
         elif ProxyStatus['ExistingProxy'] == False:
@@ -146,8 +184,8 @@ async def CheckforProxy(message):
     AD_ProxyResults = {
         'ProxyFound':False,
         'GUID' : None,
-        'WebHooks' : None
-    }
+        'WebHooks' : None,
+        'autoProxy' :False}
     UserData = getUserAutoProxyState(str(message.author.id))
     if UserData.rowcount == 0:
         pass
@@ -156,7 +194,8 @@ async def CheckforProxy(message):
             if row[0] == True:
                 print("Autoproxy on, skip some of the checks")
                 AD_ProxyResults['ProxyFound'] = True
-                AD_ProxyResults['GUID'] = UserData[1]
+                AD_ProxyResults['autoProxy'] = True
+                AD_ProxyResults['GUID'] = row[1]
         if AD_ProxyResults['ProxyFound'] == False:
             PrefixList = GetUserProxyPrefix(str(message.author.id))
             for row in PrefixList:
@@ -174,8 +213,10 @@ async def CheckforProxy(message):
                 JSON_Data["username"] = row[5]
                 JSON_Data["avatar_url"] = row[6]
                 AD_ProxyResults["ReplaceText"] = row[4]
-            
-            JSON_Data["content"] = str(message.content[len(AD_ProxyResults["ReplaceText"]):])
+            if AD_ProxyResults['autoProxy'] == False:
+                JSON_Data["content"] = str(message.content[len(AD_ProxyResults["ReplaceText"]):])
+            else:
+                JSON_Data["content"] = str(message.content)
             RepliedMessage = ''
             try:
                 print(str(message.reference.message_id))
