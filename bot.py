@@ -159,9 +159,9 @@ async def on_ready() -> None:
         f"Running on: {platform.system()} {platform.release()} ({os.name})")
     bot.logger.info("-------------------")
     status_task.start()
-    if config["sync_commands_globally"]:
-        bot.logger.info("Syncing commands globally...")
-        await bot.tree.sync()
+    bot.logger.info("Syncing commands globally...")
+    await bot.tree.sync()
+    bot.logger.info("Commands synced globally.")
 
 
 @tasks.loop(minutes=1.0)
@@ -169,7 +169,7 @@ async def status_task() -> None:
     """
     Setup the game status task of the bot.
     """
-    statuses = ["with you!", "with Krypton!", "with humans!"]
+    statuses = ["endos 👎"]
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
 
 
@@ -182,8 +182,6 @@ async def on_message(message: discord.Message) -> None:
     """
     if message.author == bot.user or message.author.bot:
         return
-    
-    await bot.process_commands(message)
 
     author_id = message.author.id
     guild_id = message.guild.id 
@@ -192,7 +190,7 @@ async def on_message(message: discord.Message) -> None:
     if message.author.bot:
         return
     await CheckforProxy(message)
-    await client.process_commands(message)
+    await bot.process_commands(message)
 
 
 
