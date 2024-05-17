@@ -18,6 +18,7 @@ import aiosqlite
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
+from APIKeys import *
 
 import exceptions
 
@@ -298,4 +299,5 @@ async def load_cogs() -> None:
 
 asyncio.run(init_db())
 asyncio.run(load_cogs())
-bot.run(config["token"])
+#bot.run(config["token"])
+bot.run(Botkey)
